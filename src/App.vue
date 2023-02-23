@@ -2,12 +2,13 @@
 import { ref } from "vue";
 import TheFooter from "./components/TheFooter.vue";
 import TheHeader from "./components/TheHeader.vue";
-import monsterImg1 from "./assets/monster1.jpg";
-import monsterImg2 from "./assets/monster2.jpg";
-import monsterImg3 from "./assets/monster3.jpg";
-import monsterImg4 from "./assets/monster4.jpg";
-import monsterImg5 from "./assets/monster5.jpg";
-import monsterImg6 from "./assets/monster6.jpg";
+import ConcentrateImage from "./assets/ConcentrateImage.png";
+import HarmonyImage from "./assets/HarmonyImage.png";
+import ImaginationImage from "./assets/ImaginationImage.png";
+import ImpulsivityImage from "./assets/ImpulsivityImage.png";
+import InstantaneousImage from "./assets/InstantaneousImage.png";
+import ObsessionImage from "./assets/ObsessionImage.png";
+import TalkImage from "./assets/TalkImage.png";
 
 // 変数へ初期値を代入
 const questionBox = [
@@ -18,201 +19,149 @@ const questionBox = [
   ["変わっているねとよく言われるやばへき"],
   ["物事の要点をつかむのが得意だ"],
   ["子どもの頃から整理整頓が苦手"],
-  ["いつも探し物をしている"],
+  ["いつも探し物をしている"]
 ];
 let questionNumber = 0;
-let questionKind = 1;
-let monsterNumber = 6;
-const playerLife = ref("");
-const monsterLife = ref("");
-const titleContent = ref("あなたの得意を知ってみましょう");
+let questionKind = 6;
+let questionCount = 1;
+let playerStatus = [0, 0, 0, 0, 0, 0, 0, 0];
+const titleContent = ref("あなたの得意を分析してみましょう");
 const quesitonContent = ref(questionBox[0][0]);
 const selectBtn = ref(false);
 const startBtn = ref(true);
 const retryBtn = ref(false);
-const lifeBox = ref(false);
 const titleBox = ref(true);
 const charengeResultShow = ref(false);
 const keepResultShow = ref(false);
-const monsterShow1 = ref(false);
-const monsterShow2 = ref(false);
-const monsterShow3 = ref(false);
-const monsterShow4 = ref(false);
-const monsterShow5 = ref(false);
-const monsterShow6 = ref(false);
+const changeShowCharacter = ref(false);
+const harmonyImageShow = ref(false);
+const imaginationImageShow = ref(false);
+const impulsivityImageShow = ref(false);
+const instantaneousImageShow = ref(false);
+const obsessionImageShow = ref(false);
+const talkImageShow = ref(false);
 
 // 問題を20個のうちからランダム持ってくるための関数
-function getRandomInt(min, max) {
+function GetRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
 // 質問をランダムで返す関数
-const chnageQuestion = () => {
-  questionKind = getRandomInt(1, 3);
-  questionNumber = getRandomInt(0, 1);
+const ChangeQuestion = () => {
+  questionKind = GetRandomInt(1, 7);
+  questionNumber = GetRandomInt(0, 1);
   return questionBox[questionKind][questionNumber];
 };
 
 // スタートボタンを押した時の動作
 const startDiagnosis = () => {
-  quesitonContent.value = chnageQuestion();
-  monsterNumber = getRandomInt(1, 7);
-  showMonster(monsterNumber);
-  playerLife.value = 2;
+  quesitonContent.value = ChangeQuestion();
+  ChangeShowCharacter();
   startBtn.value = !startBtn.value;
   selectBtn.value = !selectBtn.value;
   titleBox.value = !titleBox.value;
-  document.getElementById("playerLifeId").style.color = "black";
-  document.getElementById("playerLifeId").style.fontWeight = "normal";
-  document.getElementById("monsterLifeId").style.color = "black";
-  document.getElementById("monsterLifeId").style.fontWeight = "normal";
-  lifeBox.value = !lifeBox.value;
 };
 
 // リトライボタンを押した時の操作
 const retryDiagnosis = () => {
   quesitonContent.value = questionBox[0][0];
-  titleContent.value = "ランダムな質問に答えて転職モンスターを倒そう";
+  titleContent.value = "あなたの得意を分析してみましょう";
   document.getElementById("titleContentId").style.color = "black";
   document.getElementById("titleContentId").style.fontWeight = "normal";
   startBtn.value = !startBtn.value;
   retryBtn.value = !retryBtn.value;
   charengeResultShow.value = false;
   keepResultShow.value = false;
+  questionCount = 1;
 };
 
 // 結果を表示する
-const resultDiagnosis = (resultNumber) => {
+const ResultDiagnosis = () => {
+  ChangeShowCharacter();
   selectBtn.value = !selectBtn.value;
   retryBtn.value = !retryBtn.value;
   titleBox.value = !titleBox.value;
-  lifeBox.value = !lifeBox.value;
-  showMonster(monsterNumber);
   document.getElementById("titleContentId").style.color = "red";
   document.getElementById("titleContentId").style.fontWeight = "bold";
-  if (resultNumber == 1) {
-    titleContent.value = "転職モンスターの勝ちです";
-    quesitonContent.value = "今すぐ転職して新しい一歩を踏み出そう";
-    charengeResultShow.value = !charengeResultShow.value;
-  } else {
-    titleContent.value = "あなたの勝ちです";
-    quesitonContent.value = "今の職場で楽しく仕事をしよう";
-    keepResultShow.value = !keepResultShow.value;
-  }
+  titleContent.value = "あなたの診断結果です";
+  quesitonContent.value = "あなたはライオンさんタイプです";
+  charengeResultShow.value = !charengeResultShow.value;
 };
 
 // はいかいいえを押した時の操作
-const nextQestion = (selectAnswer) => {
-  document.getElementById("playerLifeId").style.color = "black";
-  document.getElementById("playerLifeId").style.fontWeight = "normal";
-  document.getElementById("monsterLifeId").style.color = "black";
-  document.getElementById("monsterLifeId").style.fontWeight = "normal";
-  if (questionKind == 1) {
-    if (selectAnswer == "Yes") {
-      monsterLife.value = monsterLife.value - 1;
-      document.getElementById("monsterLifeId").style.color = "red";
-      document.getElementById("monsterLifeId").style.fontWeight = 900;
-    } else {
-      playerLife.value = playerLife.value - 1;
-      document.getElementById("playerLifeId").style.color = "red";
-      document.getElementById("playerLifeId").style.fontWeight = 900;
-    }
-  } else {
-    if (selectAnswer == "Yes") {
-      playerLife.value = playerLife.value - 1;
-      document.getElementById("playerLifeId").style.color = "red";
-      document.getElementById("playerLifeId").style.fontWeight = 900;
-    } else {
-      monsterLife.value = monsterLife.value - 1;
-      document.getElementById("monsterLifeId").style.color = "red";
-      document.getElementById("monsterLifeId").style.fontWeight = 900;
-    }
+const NextQestion = (selectAnswer) => {
+  if (selectAnswer == "Yes") {
+    playerStatus[questionKind] += 1;
   }
-  if (playerLife.value == 0) {
-    resultDiagnosis(1);
-  } else if (monsterLife.value == 0) {
-    resultDiagnosis(2);
+  ChangeShowCharacter();
+  quesitonContent.value = ChangeQuestion();
+  ChangeShowCharacter();
+  if (questionCount == 7) {
+    ResultDiagnosis();
   } else {
-    quesitonContent.value = chnageQuestion();
+    questionCount = questionCount + 1;
   }
 };
 
-// 該当の番号のモンスター画像の表示を切り替える関数（非表示にもする）
-const showMonster = (monsterNumber) => {
-  switch (monsterNumber) {
+// 該当の番号のキャラクター画像の表示を切り替える関数（非表示にもする）
+const ChangeShowCharacter = () => {
+  switch (questionKind) {
     case 1:
-      monsterLife.value = 3;
-      monsterShow1.value = !monsterShow1.value;
+      changeShowCharacter.value = !changeShowCharacter.value;
       break;
     case 2:
-      monsterLife.value = 2;
-      monsterShow2.value = !monsterShow2.value;
+      harmonyImageShow.value = !harmonyImageShow.value;
       break;
     case 3:
-      monsterLife.value = 4;
-      monsterShow3.value = !monsterShow3.value;
+      imaginationImageShow.value = !imaginationImageShow.value;
       break;
     case 4:
-      monsterLife.value = 3;
-      monsterShow4.value = !monsterShow4.value;
+      impulsivityImageShow.value = !impulsivityImageShow.value;
       break;
     case 5:
-      monsterLife.value = 3;
-      monsterShow5.value = !monsterShow5.value;
+      instantaneousImageShow.value = !instantaneousImageShow.value;
       break;
     case 6:
-      monsterLife.value = 2;
-      monsterShow6.value = !monsterShow6.value;
+      obsessionImageShow.value = !obsessionImageShow.value;
+      break;
+    case 7:
+      talkImageShow.value = !talkImageShow.value;
       break;
   }
 };
 </script>
 <template>
   <TheHeader />
-  <Head>
-    <title>テスト</title>
-  </Head>
   <div class="container-fluid">
     <div class="mainbox row">
       <div class="col-12">
-        <!-- モンスター画像 -->
+        <!-- 画像画像 -->
         <div class="monsterimg">
-          <div v-show="monsterShow1">
-            <img :src="monsterImg1" alt="モンスター画像1" />
+          <div v-show="changeShowCharacter">
+            <img :src="ConcentrateImage" alt="集中力画像" />
           </div>
-          <div v-show="monsterShow2">
-            <img :src="monsterImg2" alt="モンスター画像2" />
+          <div v-show="harmonyImageShow">
+            <img :src="HarmonyImage" alt="調和性画像" />
           </div>
-          <div v-show="monsterShow3">
-            <img :src="monsterImg3" alt="モンスター画像3" />
+          <div v-show="imaginationImageShow">
+            <img :src="ImaginationImage" alt="想像力画像" />
           </div>
-          <div v-show="monsterShow4">
-            <img :src="monsterImg4" alt="モンスター画像4" />
+          <div v-show="impulsivityImageShow">
+            <img :src="ImpulsivityImage" alt="衝動性画像" />
           </div>
-          <div v-show="monsterShow5">
-            <img :src="monsterImg5" alt="モンスター画像5" />
+          <div v-show="instantaneousImageShow">
+            <img :src="InstantaneousImage" alt="瞬発力画像" />
           </div>
-          <div v-show="monsterShow6">
-            <img :src="monsterImg6" alt="モンスター画像6" />
+          <div v-show="obsessionImageShow">
+            <img :src="ObsessionImage" alt="こだわり画像" />
+          </div>
+          <div v-show="talkImageShow">
+            <img :src="TalkImage" alt="会話画像" />
           </div>
         </div>
         <!-- 質問画面 -->
-        <div v-show="lifeBox">
-          <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-4 mt-3">
-              <p>モンスターのライフ</p>
-              <p id="monsterLifeId">{{ monsterLife }}</p>
-            </div>
-            <div class="col-md-4 mt-3">
-              <p>あなたのライフ</p>
-              <p id="playerLifeId">{{ playerLife }}</p>
-            </div>
-            <div class="col-md-2"></div>
-          </div>
-        </div>
         <div v-show="titleBox" class="mt-3">
           <h1 id="titleContentId">{{ titleContent }}</h1>
         </div>
@@ -229,12 +178,12 @@ const showMonster = (monsterNumber) => {
             <div class="row">
               <div class="col-md-2"></div>
               <div class="col-md-4 mt-3">
-                <button class="btn whiteblue" @click="nextQestion('Yes')">
+                <button class="btn whiteblue" @click="NextQestion('Yes')">
                   はい
                 </button>
               </div>
               <div class="col-md-4 mt-3">
-                <button class="btn red" @click="nextQestion('No')">
+                <button class="btn red" @click="NextQestion('No')">
                   いいえ
                 </button>
               </div>
@@ -243,52 +192,57 @@ const showMonster = (monsterNumber) => {
           </div>
         </div>
         <!-- 結果表示画面 -->
-        <div v-show="retryBtn" class="mt-5">
-          <div v-show="charengeResultShow">
-            <p>↓↓転職にチャレンジしてみる↓↓</p>
-            <div class="flexbox">
-              <a
-                href="https://px.a8.net/svt/ejp?a8mat=3NLCW6+A4DB02+54NS+5Z6WX"
-                rel="nofollow"
-              >
-                <img
-                  border="0"
-                  width="468"
-                  height="60"
-                  alt=""
-                  src="https://www28.a8.net/svt/bgt?aid=221026182612&wid=001&eno=01&mid=s00000023932001004000&mc=1"
-              /></a>
-              <img
-                border="0"
-                width="1"
-                height="1"
-                src="https://www16.a8.net/0.gif?a8mat=3NLCW6+A4DB02+54NS+5Z6WX"
-                alt=""
-              />
+        <div v-show="charengeResultShow" class="mt-5">
+          <div class="row">
+            <div class="col-1"></div>
+            <div id="bar-graph" class="content col-10">
+              <div class="box15">
+                <h2 class="c-title">あなたの虹色ステータス</h2>
+                <div class="bar-graph-wrap">
+                  <div class="graph red mt-3">
+                    <span class="name">勉強</span>
+                    <span class="number">65%</span>
+                  </div>
+                  <div class="graph orange mt-3">
+                    <span class="name">お手伝い</span>
+                    <span class="number">36%</span>
+                  </div>
+                  <div class="graph yellow mt-3">
+                    <span class="name">お話</span>
+                    <span class="number">76%</span>
+                  </div>
+                  <div class="graph green mt-3">
+                    <span class="name">友達</span>
+                    <span class="number">27%</span>
+                  </div>
+                  <div class="graph lightblue mt-3">
+                    <span class="name">コツコツ</span>
+                    <span class="number">40%</span>
+                  </div>
+                  <div class="graph blue mt-3">
+                    <span class="name">遊び</span>
+                    <span class="number">20%</span>
+                  </div>
+                  <div class="graph purple mt-3">
+                    <span class="name">PC</span>
+                    <span class="number">27%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="box15 mt-3">
+                <h3>ライオンさんタイプの個性</h3>
+                <p>
+                  友達思いなあなたはみんなの中心になって引っ張っていける存在です
+                </p>
+                <p>
+                  ただたまに色んな事に興味を持ちすぎてしまったりするので注意
+                </p>
+              </div>
+              <div class="my-3">
+                <a href="#">あなたの才能をもっと伸ばす方法はこちらをクリック</a>
+              </div>
             </div>
-          </div>
-          <div v-show="keepResultShow">
-            <p>↓↓やっぱりチャレンジしたいと思ったら↓↓</p>
-            <div class="flexbox">
-              <a
-                href="https://px.a8.net/svt/ejp?a8mat=3NLCW6+A4DB02+54NS+5Z6WX"
-                rel="nofollow"
-              >
-                <img
-                  border="0"
-                  width="468"
-                  height="60"
-                  alt=""
-                  src="https://www28.a8.net/svt/bgt?aid=221026182612&wid=001&eno=01&mid=s00000023932001004000&mc=1"
-              /></a>
-              <img
-                border="0"
-                width="1"
-                height="1"
-                src="https://www16.a8.net/0.gif?a8mat=3NLCW6+A4DB02+54NS+5Z6WX"
-                alt=""
-              />
-            </div>
+            <div class="col-1"></div>
           </div>
           <button class="startbtn red mt-5" @click="retryDiagnosis">
             リトライ
@@ -353,7 +307,7 @@ const showMonster = (monsterNumber) => {
 }
 .monsterimg {
   margin: 0 auto;
-  width: 50%;
+  width: 30%;
 }
 @media screen and (max-width: 639px) {
   /*スマホ用のcssを記述*/
@@ -377,5 +331,112 @@ const showMonster = (monsterNumber) => {
 }
 .weblink {
   font-size: 24px;
+}
+
+.bar-graph-wrap {
+  position: relative;
+  height: 450px;
+  -webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.bar-graph-wrap .graph {
+  height: 40px;
+  position: absolute;
+  left: 0;
+  border-radius: 0 4px 4px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 10px;
+  -webkit-animation: graphAnim 2.5s forwards;
+  animation: graphAnim 2.5s forwards;
+}
+.bar-graph-wrap .graph span {
+  font-size: 14px;
+  color: #ffffff;
+}
+@media screen and (max-width: 750px) {
+  .bar-graph-wrap .graph span {
+    font-size: 12px;
+  }
+}
+.bar-graph-wrap .graph.red {
+  top: 10px;
+  background: #ff3051;
+  width: 65%;
+}
+.bar-graph-wrap .graph.orange {
+  top: 70px;
+  background: #ffb030;
+  width: 36%;
+}
+.bar-graph-wrap .graph.yellow {
+  top: 130px;
+  background: rgb(234, 234, 57);
+  width: 40%;
+}
+.bar-graph-wrap .graph.green {
+  top: 190px;
+  background: greenyellow;
+  width: 65%;
+}
+.bar-graph-wrap .graph.lightblue {
+  top: 250px;
+  background: rgb(0, 221, 255);
+  width: 40%;
+}
+.bar-graph-wrap .graph.blue {
+  top: 310px;
+  background: blue;
+  width: 20%;
+}
+
+.bar-graph-wrap .graph.purple {
+  top: 370px;
+  background: #c01fd2;
+  width: 27%;
+}
+
+@-webkit-keyframes graphAnim {
+  0% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes graphAnim {
+  0% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+.box15 {
+  padding: 0.2em 0.5em;
+  margin: 2em 0;
+  color: #565656;
+  background: #ffeaea;
+  box-shadow: 0px 0px 0px 10px #ffeaea;
+  border: dashed 2px #ffc3c3;
+  border-radius: 8px;
+}
+.box15 p {
+  margin: 0;
+  padding: 0;
 }
 </style>
