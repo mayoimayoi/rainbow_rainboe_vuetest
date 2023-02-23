@@ -25,6 +25,7 @@ let questionNumber = 0;
 let questionKind = 6;
 let questionCount = 1;
 let playerStatus = [0, 0, 0, 0, 0, 0, 0, 0];
+let questionNeedCount = 1;
 const titleContent = ref("あなたの得意を分析してみましょう");
 const quesitonContent = ref(questionBox[0][0]);
 const selectBtn = ref(false);
@@ -57,6 +58,8 @@ const ChangeQuestion = () => {
 
 // スタートボタンを押した時の動作
 const startDiagnosis = () => {
+  // 質問に答える数を指定する
+  questionNeedCount = document.getElementById("questionNeedNumber").value;
   quesitonContent.value = ChangeQuestion();
   ChangeShowCharacter();
   startBtn.value = !startBtn.value;
@@ -98,7 +101,7 @@ const NextQestion = (selectAnswer) => {
   ChangeShowCharacter();
   quesitonContent.value = ChangeQuestion();
   ChangeShowCharacter();
-  if (questionCount == 7) {
+  if (questionCount == questionNeedCount) {
     ResultDiagnosis();
   } else {
     questionCount = questionCount + 1;
@@ -138,7 +141,7 @@ const ChangeShowCharacter = () => {
     <div class="mainbox row">
       <div class="col-12">
         <!-- 画像画像 -->
-        <div class="monsterimg">
+        <div class="characterimg">
           <div v-show="changeShowCharacter">
             <img :src="ConcentrateImage" alt="集中力画像" />
           </div>
@@ -170,6 +173,10 @@ const ChangeShowCharacter = () => {
         </div>
         <div class="mt-3">
           <div v-show="startBtn">
+            <div class="my-3">
+              <p>質問に答える数を指定してください</p>
+              <input type="number" id="questionNeedNumber" />
+            </div>
             <button class="startbtn blue" @click="startDiagnosis">
               スタート
             </button>
@@ -305,13 +312,13 @@ const ChangeShowCharacter = () => {
 .red {
   background-color: indianred;
 }
-.monsterimg {
+.characterimg {
   margin: 0 auto;
   width: 30%;
 }
 @media screen and (max-width: 639px) {
   /*スマホ用のcssを記述*/
-  .monsterimg {
+  .characterimg {
     width: 100%;
   }
   .btn {
