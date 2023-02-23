@@ -1,14 +1,14 @@
 <script setup>
-import TopImg from "./../assets/TopImg.png";
+import TopImg from "./../assets/topImage.png";
 </script>
 <template>
   <header>
-    <img :src="TopImg" alt="トップ画像" class="topImg pt-2" />
+    <img :src="TopImg" alt="トップ画像" class="topimg" />
   </header>
 </template>
 
 <style scoped>
-.topImg {
+.topimg {
   margin: 20px auto;
   max-height: 70px;
 }
